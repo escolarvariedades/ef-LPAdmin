@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Memória Educativo</title>
+    <style>
+/* ============================================================
+   BOTÃO DISCRETO DE SAÍDA
+   ============================================================ */
+
+#game-exit {
+    position: fixed;
+    top: 6px;
+    right: 6px;
+    z-index: 2147483647;
+
+    width: 18px;
+    height: 28px;
+
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px;
+
+    background: rgba(0,0,0,.18);
+    color: rgba(255,255,255,.35);
+
+    cursor: pointer;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    transition:
+        width .22s ease,
+        background .22s ease,
+        color .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+
+/* Ícone */
+#game-exit .game-exit-icon {
+    flex: 0 0 18px;
+
+    width: 18px;
+
+    text-align: center;
+
+    font-size: 13px;
+    line-height: 26px;
+}
+
+
+/* Texto SAIR */
+#game-exit .game-exit-label {
+    opacity: 0;
+
+    width: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+
+    font: 700 9px/1 Arial, sans-serif;
+    letter-spacing: .7px;
+
+    transition:
+        opacity .16s ease,
+        width .22s ease;
+}
+
+
+/* ============================================================
+   BOTÃO EXPANDIDO
+   ============================================================ */
+
+#game-exit:hover,
+#game-exit:focus-visible,
+#game-exit.is-open {
+
+    width: 72px;
+
+    background: rgba(0,0,0,.72);
+
+    color: rgba(255,255,255,.92);
+
+    border-color: rgba(255,255,255,.28);
+
+    box-shadow: 0 3px 12px rgba(0,0,0,.25);
+
+    outline: none;
+}
+
+
+#game-exit:hover .game-exit-label,
+#game-exit:focus-visible .game-exit-label,
+#game-exit.is-open .game-exit-label {
+
+    opacity: 1;
+
+    width: 50px;
+}
+
+
+/* ============================================================
+   DISPOSITIVOS TOUCH
+   ============================================================ */
+
+@media (hover: none) {
+
+    #game-exit {
+        opacity: .58;
+    }
+
+}
+</style>
+
+    <style>
+        :root {
+    --primary: #4CAF50;
+    --primary-hover: #45a049;
+    --secondary: #2196F3;
+    --secondary-hover: #1976D2;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --card-back: #ff9800;
+    --text-dark: #333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+#app-container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+}
+
+.hidden { display: none !important; }
+.active { display: block; }
+.mt { margin-top: 20px; }
+
+/* Botões */
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-weight: bold;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--secondary); color: white; }
+.btn-secondary:hover { background: var(--secondary-hover); }
+.btn-small { padding: 5px 15px; font-size: 18px; margin: 0 10px; }
+
+.btn-top {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #555;
+    color: white;
+}
+
+/* Telas de Configuração */
+.config-group {
+    background: var(--bg-color);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+    text-align: left;
+}
+.config-group h3 { margin-bottom: 10px; border-bottom: 2px solid #ddd; padding-bottom: 5px; }
+.config-group label { display: inline-block; margin-right: 15px; cursor: pointer; }
+
+#timer-controls { margin-top: 10px; display: flex; align-items: center; }
+#time-display { font-size: 20px; font-weight: bold; }
+
+/* Escolha de Tema */
+.theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+.theme-btn {
+    padding: 20px;
+    font-size: 18px;
+    background: var(--bg-color);
+    border: 2px solid #ccc;
+}
+.theme-btn:hover { border-color: var(--primary); background: #e8f5e9; }
+
+/* Lista de Conhecimentos */
+.knowledge-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    text-align: left;
+    margin-top: 20px;
+}
+.knowledge-item {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 5px solid var(--primary);
+}
+.knowledge-item span.emoji { font-size: 40px; margin-right: 15px; }
+
+/* Cabeçalho do Jogo */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #eee;
+    padding: 10px;
+    border-radius: 10px;
+}
+#scoreboard { display: flex; gap: 15px; font-size: 18px; font-weight: bold; }
+.score { padding: 5px 10px; border-radius: 5px; }
+.active-turn { background: var(--primary); color: white; }
+#timer-box { font-size: 20px; font-weight: bold; color: #d32f2f; }
+
+/* Área do Jogo e Grid */
+.game-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+    flex: 3;
+    min-width: 300px;
+}
+
+/* Cartas (Flip Animation) */
+.card {
+    width: 100%;
+    aspect-ratio: 1 / 1.1;
+    perspective: 1000px;
+    cursor: pointer;
+}
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-front, .card-back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.card-back { background-color: var(--card-back); background-image: radial-gradient(#ffe0b2 15%, transparent 16%), radial-gradient(#ffe0b2 15%, transparent 16%); background-size: 20px 20px; background-position: 0 0, 10px 10px; }
+.card-front {
+    background-color: var(--card-bg);
+    transform: rotateY(180deg);
+    border: 2px solid var(--primary);
+}
+.card-front .emoji { font-size: 2.5rem; }
+.card-front .title { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+
+/* Lista de Acertos */
+.found-container {
+    flex: 1;
+    min-width: 200px;
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: left;
+}
+#found-list { list-style: none; margin-top: 10px; }
+#found-list li {
+    background: white;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: 0.2s;
+}
+#found-list li:hover { background: var(--secondary); color: white; }
+
+/* Modal */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: white; padding: 30px; border-radius: 15px;
+    text-align: center; max-width: 400px; width: 90%; position: relative;
+}
+.close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
+.modal-emoji { font-size: 80px; margin-bottom: 10px; }
+
+@media (max-width: 600px) {
+    .theme-grid { grid-template-columns: 1fr; }
+    .game-area { flex-direction: column; }
+    .card-front .emoji { font-size: 2rem; }
+}
+        
+    
+/* =========================================================
+   APRIMORAMENTO VISUAL — MEMÓRIA EDUCATIVA
+   Somente aparência; lógica e conteúdo originais preservados.
+   ========================================================= */
+:root{
+    --primary:#35e6a3;
+    --primary-hover:#5af0b6;
+    --secondary:#19324b;
+    --secondary-hover:#254b6d;
+    --bg-color:#07111f;
+    --card-bg:#183b5a;
+    --card-back:#102942;
+    --text-dark:#f5f8fc;
+    --line:#24435f;
+    --muted:#9eb2c8;
+    --gold:#ffd166;
+    --shadow:0 18px 50px rgba(0,0,0,.52);
+}
+html{
+    background:#050b13;
+}
+body{
+    background:
+      radial-gradient(circle at 8% 0%,rgba(22,79,74,.34),transparent 28%),
+      radial-gradient(circle at 92% 8%,rgba(20,81,138,.34),transparent 30%),
+      linear-gradient(145deg,#050b13,#091626 55%,#06101c);
+    color:var(--text-dark);
+    min-height:100vh;
+    padding:14px;
+}
+#app-container{
+    background:rgba(13,27,46,.95);
+    border:1px solid #23415e;
+    padding:clamp(18px,4vw,34px);
+    border-radius:25px;
+    box-shadow:var(--shadow);
+    max-width:1180px;
+    width:100%;
+}
+h1{
+    color:#f5f8fc;
+    font-size:clamp(29px,6vw,50px);
+    margin:4px 0 20px;
+    letter-spacing:-.6px;
+}
+h1::first-letter{filter:drop-shadow(0 5px 8px rgba(0,0,0,.4))}
+h2,h3{color:#f5f8fc}
+button{
+    border-radius:14px;
+    font-weight:900;
+    border:1px solid transparent;
+    transition:transform .18s,box-shadow .18s,border-color .18s,background .18s;
+}
+button:hover{
+    transform:translateY(-1px);
+}
+.btn-primary{
+    background:linear-gradient(135deg,var(--primary),#50a8ff);
+    color:#04111a;
+    box-shadow:0 8px 22px rgba(53,230,163,.15);
+}
+.btn-primary:hover{
+    background:linear-gradient(135deg,#5af0b6,#6bb8ff);
+    box-shadow:0 10px 28px rgba(53,230,163,.22);
+}
+.btn-secondary{
+    background:#19324b;
+    color:#fff;
+    border-color:#294864;
+}
+.btn-secondary:hover{background:#254b6d}
+.btn-small{
+    background:#193753;
+    color:#fff;
+    border:0;
+    margin:0 4px;
+}
+.btn-top{
+    top:14px;
+    right:14px;
+    background:#10253c;
+    border:1px solid var(--line);
+    color:#fff;
+    border-radius:13px;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    z-index:10;
+}
+.config-group{
+    background:#091728;
+    border:1px solid #1d3853;
+    padding:16px;
+    border-radius:18px;
+    margin:15px 0;
+    text-align:left;
+}
+.config-group h3{
+    margin-bottom:12px;
+    border-bottom:1px solid #24435f;
+    padding-bottom:9px;
+    color:#fff;
+}
+.config-group label{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:linear-gradient(145deg,#112a44,#0c1c30);
+    border:1px solid #294864;
+    color:#fff;
+    border-radius:15px;
+    padding:12px 14px;
+    margin:4px 6px 4px 0;
+    cursor:pointer;
+    transition:.18s;
+}
+.config-group label:hover{
+    border-color:var(--primary);
+}
+.config-group input{
+    accent-color:var(--primary);
+}
+#timer-controls{
+    gap:8px;
+    flex-wrap:wrap;
+}
+#time-display{
+    color:var(--green,#35e6a3);
+    background:#10253c;
+    border:1px solid #294864;
+    padding:7px 15px;
+    border-radius:11px;
+}
+.theme-grid{
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+.theme-btn{
+    min-height:145px;
+    padding:16px;
+    font-size:18px;
+    background:linear-gradient(145deg,#112a44,#0c1c30);
+    color:#fff;
+    border:1px solid #294864;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+}
+.theme-btn:hover{
+    border-color:var(--primary);
+    background:linear-gradient(145deg,#153655,#0d2136);
+    box-shadow:0 0 0 2px rgba(53,230,163,.11);
+}
+.theme-btn::first-line{font-size:40px}
+.knowledge-container{
+    max-height:60vh;
+    overflow-y:auto;
+    background:#091728;
+    border:1px solid #1d3853;
+    border-radius:18px;
+    padding:10px;
+    text-align:left;
+}
+.knowledge-item{
+    background:#0d2034;
+    border:1px solid #203d58;
+    border-left:3px solid var(--primary);
+    padding:10px 12px;
+    margin-bottom:8px;
+    border-radius:13px;
+    color:#fff;
+}
+.knowledge-item p{
+    color:var(--muted);
+    line-height:1.4;
+    margin-top:3px;
+}
+.knowledge-item span.emoji{
+    font-size:38px;
+}
+.game-header{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:10px;
+    align-items:center;
+    margin-bottom:12px;
+    background:transparent;
+    padding:0;
+}
+#scoreboard{
+    gap:8px;
+    font-size:18px;
+}
+.score{
+    background:#091728;
+    border:1px solid #203c57;
+    color:#fff;
+    padding:9px 12px;
+    border-radius:14px;
+}
+.active-turn{
+    background:#102d2b;
+    border-color:var(--primary);
+    color:var(--primary);
+    box-shadow:0 0 0 2px rgba(53,230,163,.08);
+}
+#timer-box{
+    color:var(--gold);
+    background:#291f0d;
+    border:1px solid #6c5620;
+    border-radius:14px;
+    padding:9px 12px;
+}
+#btn-start-game{
+    justify-self:end;
+}
+.game-area{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 260px;
+    gap:15px;
+    align-items:start;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    min-width:0;
+}
+.card{
+    aspect-ratio:1/1.1;
+}
+.card-inner{
+    transition:transform .48s cubic-bezier(.2,.7,.2,1);
+}
+.card-front,.card-back{
+    border-radius:16px;
+    border:2px solid #274764;
+    box-shadow:0 12px 22px rgba(0,0,0,.25);
+}
+.card-back{
+    background:linear-gradient(145deg,#153655,#091c30);
+    background-image:none;
+    color:var(--primary);
+    font-size:0;
+}
+.card-back::after{
+    content:"✦";
+    font-size:42px;
+    opacity:.42;
+}
+.card-front{
+    background:linear-gradient(145deg,#183b5a,#0c2339);
+    border-color:var(--primary);
+}
+.card-front .emoji{
+    font-size:clamp(34px,6vw,58px);
+    line-height:1;
+}
+.card-front .title{
+    font-size:clamp(10px,1.8vw,15px);
+    color:#fff;
+    margin-top:7px;
+}
+.found-container{
+    background:#091728;
+    border:1px solid #203c57;
+    border-radius:18px;
+    padding:14px;
+}
+.found-container h3{margin:0 0 10px}
+#found-list{
+    display:grid;
+    gap:7px;
+}
+#found-list li{
+    background:#10253b;
+    border:1px solid #23435f;
+    color:#fff;
+    border-radius:10px;
+    padding:9px;
+    margin:0;
+    box-shadow:none;
+}
+#found-list li:hover{
+    background:#153655;
+    border-color:var(--primary);
+    color:#fff;
+}
+.modal{
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(4px);
+}
+.modal-content{
+    background:#0d1b2e;
+    border:1px solid #315474;
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:24px;
+    color:#fff;
+}
+.modal-content p{
+    color:var(--muted);
+    line-height:1.55;
+}
+.close{
+    color:#9eb2c8;
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:9px;
+}
+.close:hover{background:#19324b;color:#fff}
+.modal-emoji{
+    filter:drop-shadow(0 8px 8px rgba(0,0,0,.35));
+}
+.mt{margin-top:20px}
+
+/* scrollbar */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:#091728}
+::-webkit-scrollbar-thumb{background:#24435f;border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:#35e6a3}
+
+@media(max-width:850px){
+    .theme-grid{grid-template-columns:repeat(2,1fr)}
+    .game-area{grid-template-columns:1fr}
+    .found-container{order:2}
+}
+@media(max-width:600px){
+    body{padding:8px}
+    #app-container{border-radius:18px;padding:14px}
+    .grid{gap:6px}
+    .card-front,.card-back{border-radius:12px}
+    .theme-grid{gap:8px}
+    .theme-btn{min-height:125px}
+    .game-header{grid-template-columns:1fr 1fr}
+    #timer-box{justify-self:end}
+    #btn-start-game{grid-column:1/-1;justify-self:center}
+}
+
+    </style>
+<body>
+    <!-- Início do Botão de Sair Oculto -->
+<div id="btn-sair-oculto" onclick="window.location.href='offline.html'">
+    <span>Sair</span>
+</div>
+
+<style>
+    #btn-sair-oculto {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 12px; /* Super discreto inicialmente */
+        background-color: rgba(255, 255, 255, 0.2); /* Fundo claro e transparente */
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        cursor: pointer;
+        z-index: 99999; /* Garante que fique acima de todos os elementos do jogo */
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        backdrop-filter: blur(2px); /* Dá um leve desfoque no fundo */
+    }
+
+    /* Expansão ao passar o mouse ou tocar */
+    #btn-sair-oculto:hover, #btn-sair-oculto:active {
+        height: 40px;
+        width: 100px;
+        background-color: #8B0000; /* Cor vermelha do seu painel offline */
+        box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+    }
+
+    #btn-sair-oculto span {
+        color: white;
+        font-weight: bold;
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        font-size: 14px;
+        opacity: 0; /* O texto começa invisível */
+        transition: opacity 0.3s ease;
+    }
+
+    #btn-sair-oculto:hover span, #btn-sair-oculto:active span {
+        opacity: 1; /* O texto aparece na expansão */
+    }
+</style>
+<!-- Fim do Botão de Sair Oculto -->
+    <!-- Controle de Som (Topo) -->
+    <button id="btn-mute" class="btn-top" onclick="toggleMute()">🔊 Som</button>
+
+
+    <div id="app-container">
+        
+        <!-- TELA 1: CONFIGURAÇÕES -->
+        <div id="screen-1" class="screen active">
+            <br>
+            <h1>🧠 Memória Educativa 2 </h1>
+         
+            <div class="config-group">
+                <h3>Nível de Dificuldade</h3>
+                <label><input type="radio" name="level" value="6" checked> Básico (6 pares)</label>
+                <label><input type="radio" name="level" value="10"> Intermediário (10 pares)</label>
+                <label><input type="radio" name="level" value="15"> Avançado (15 pares)</label>
+            </div>
+
+            <div class="config-group">
+                <h3>Número de Jogadores</h3>
+                <label><input type="radio" name="players" value="1" checked> 1 Jogador</label>
+                <label><input type="radio" name="players" value="2"> 2 Jogadores</label>
+            </div>
+
+            <div class="config-group">
+                <h3>Cronômetro (Tempo por tentativa)</h3>
+                <label><input type="checkbox" id="timer-toggle"> Ativar Cronômetro</label>
+                <div id="timer-controls" class="hidden">
+                    <button class="btn-small" onclick="adjustTime(-1)">-</button>
+                    <span id="time-display">15</span> s
+                    <button class="btn-small" onclick="adjustTime(1)">+</button>
+                    <small>(Máximo 60s)</small>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="goToScreen(2)">Avançar ➔</button>
+        </div>
+
+        <!-- TELA 2: TEMA -->
+        <div id="screen-2" class="screen hidden">
+            <h1>Escolha o Tema</h1>
+            <div class="theme-grid">
+                <button class="theme-btn" onclick="selectTheme('paises')">🌍 Países</button>
+                <button class="theme-btn" onclick="selectTheme('animais')">🦁 Animais</button>
+                <button class="theme-btn" onclick="selectTheme('frutas')">🍎 Frutas e Verduras</button>
+                <button class="theme-btn" onclick="selectTheme('aleatorio')">🎲 Aleatório</button>
+            </div>
+            <button class="btn-secondary mt" onclick="goToScreen(1)">⬅ Voltar</button>
+        </div>
+
+        <!-- TELA 3: PRÉ-JOGO -->
+        <div id="screen-3" class="screen hidden">
+            <h1 id="selected-theme-title">Tema</h1>
+            <button class="btn-secondary" onclick="showList()">📚 Listar Conhecimentos do Tema</button>
+            <br><br>
+            <button class="btn-primary" onclick="startGame()">▶ Jogar Agora</button>
+            <br>
+            <button class="btn-secondary mt" onclick="goToScreen(2)">⬅ Voltar</button>
+        </div>
+
+        <!-- TELA DE LISTA DE CONHECIMENTOS (Informativa) -->
+        <div id="screen-list" class="screen hidden">
+            <h1>Conheça as Cartas</h1>
+            <div id="knowledge-list" class="knowledge-container"></div>
+            <button class="btn-primary mt" onclick="goToScreen(3)">⬅ Voltar para o Jogo</button>
+        </div>
+
+        <!-- TELA DO JOGO -->
+        <div id="screen-game" class="screen hidden">
+            <div class="game-header">
+                <div id="scoreboard">
+                    <div id="score-p1" class="score active-turn">Player 1: 0</div>
+                    <br>
+                    <div id="score-p2" class="score hidden">Player 2: 0</div>
+                </div>
+                <div id="timer-box" class="hidden">⏱ <span id="game-time">15</span>s</div>
+                <button id="btn-start-game" class="btn-primary" onclick="beginPlay()">Começar!</button>
+            </div>
+
+            <div class="game-area">
+                <div id="card-grid" class="grid hidden"></div>
+                
+                <div id="found-items" class="found-container hidden">
+                    <h3>✅ Acertos:</h3>
+                    <ul id="found-list"></ul>
+                </div>
+            </div>
+            
+            <button class="btn-secondary mt" onclick="resetToMenu()">Desistir / Menu</button>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE INFORMAÇÃO DA CARTA ENCONTRADA -->
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('info-modal')">&times;</span>
+            <div id="modal-emoji" class="modal-emoji"></div>
+            <h2 id="modal-title"></h2>
+            <p id="modal-desc"></p>
+        </div>
+    </div>
+
+    <!-- MODAL DE FIM DE JOGO -->
+    <div id="game-over-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Fim de Jogo! 🎉</h2>
+            <p id="winner-text"></p>
+            <button class="btn-primary" onclick="playAgain()">🔄 Nova Rodada (Manter Placar)</button>
+            <button class="btn-secondary" onclick="resetToMenu()">🏠 Novo Jogo (Zerar Tudo)</button>
+        </div>
+    </div>
+
+    <script>
+        
+// --- BANCO DE DADOS OFFLINE ---
+const database = {
+    paises: [
+        { id: 'br', emoji: '🇧🇷', name: 'Brasil', desc: 'Maior país da América do Sul, famoso pela floresta Amazônica, futebol e carnaval.Sua língua oficial é o português e possui grande diversidade de biomas.' },
+        { id: 'us', emoji: '🇺🇸', name: 'EUA', desc: 'País norte-americano com 50 estados, possui uma das maiores economias do mundo.' },
+        { id: 'jp', emoji: '🇯🇵', name: 'Japão', desc: 'Nação insular no Oceano Pacífico, famosa por sua tecnologia, animes, cultura milenar e pelo Monte Fuji.' },
+        { id: 'it', emoji: '🇮🇹', name: 'Itália', desc: 'País europeu em formato de bota, berço do Império Romano, das pizzas e das massas.' },
+        { id: 'fr', emoji: '🇫🇷', name: 'França', desc: 'Conhecida mundialmente pela Torre Eiffel, gastronomia refinada e museu do Louvre.' },
+        { id: 'za', emoji: '🇿🇦', name: 'África do Sul', desc: 'País localizado no extremo sul da África, famoso por seus safáris e vida selvagem.' },
+        { id: 'au', emoji: '🇦🇺', name: 'Austrália', desc: 'País que também é um continente, famoso pelos cangurus, coalas e belas praias.' },
+        { id: 'ca', emoji: '🇨🇦', name: 'Canadá', desc: 'País norte-americano conhecido por suas vastas paisagens naturais e o xarope de bordo (maple).' },
+        { id: 'mx', emoji: '🇲🇽', name: 'México', desc: 'País com rica cultura asteca e maia, famoso por sua culinária picante e mariachis.' },
+        { id: 'eg', emoji: '🇪🇬', name: 'Egito', desc: 'País no nordeste da África, lar das antigas pirâmides, faraós e do rio Nilo.' },
+        { id: 'cn', emoji: '🇨🇳', name: 'China', desc: 'País mais populoso do mundo, dono da Grande Muralha e famoso pela cultura do dragão.' },
+        { id: 'in', emoji: '🇮🇳', name: 'Índia', desc: 'País asiático famoso pelo Taj Mahal, culinária rica em especiarias e cultura vibrante.' },
+        { id: 'de', emoji: '🇩🇪', name: 'Alemanha', desc: 'Famosa por sua engenharia automotiva, castelos medievais e o festival Oktoberfest.' },
+        { id: 'ar', emoji: '🇦🇷', name: 'Argentina', desc: 'País sul-americano conhecido pelo tango, pela paixão pelo futebol e pelas carnes.' },
+        { id: 'gb', emoji: '🇬🇧', name: 'Reino Unido', desc: 'Composto por Inglaterra, Escócia, País de Gales e Irlanda do Norte. Terra da família real.' }
+    ],
+    animais: [
+        { id: 'dog', emoji: '🐶', name: 'Cachorro', desc: 'Mamífero carnívoro, leal e afetuoso. É conhecido mundialmente como o melhor amigo do homem.' },
+        { id: 'cat', emoji: '🐱', name: 'Gato', desc: 'Felino doméstico independente e ágil, com excelente visão noturna e instinto caçador.' },
+        { id: 'lion', emoji: '🦁', name: 'Leão', desc: 'Grande felino conhecido como o "rei da selva". Os machos possuem uma juba majestosa.' },
+        { id: 'elephant', emoji: '🐘', name: 'Elefante', desc: 'O maior mamífero terrestre, caracterizado por sua longa tromba e grandes orelhas.' },
+        { id: 'monkey', emoji: '🐒', name: 'Macaco', desc: 'Animal primata altamente inteligente e curioso, que vive geralmente nas árvores.' },
+        { id: 'frog', emoji: '🐸', name: 'Sapo', desc: 'Anfíbio conhecido por seus saltos longos e por coaxar perto de lagoas.' },
+        { id: 'pig', emoji: '🐷', name: 'Porco', desc: 'Animal muito inteligente que gosta de chafurdar na lama para se refrescar.' },
+        { id: 'cow', emoji: '🐮', name: 'Vaca', desc: 'Animal herbívoro de grande porte, muito importante na produção de leite e derivados.' },
+        { id: 'horse', emoji: '🐴', name: 'Cavalo', desc: 'Mamífero veloz e forte, historicamente usado pelo ser humano para transporte e agricultura.' },
+        { id: 'rabbit', emoji: '🐰', name: 'Coelho', desc: 'Pequeno mamífero herbívoro, conhecido por suas orelhas compridas e saltos rápidos.' },
+        { id: 'penguin', emoji: '🐧', name: 'Pinguim', desc: 'Ave marinha que não voa, adaptada ao frio intenso. Suas asas funcionam como nadadeiras.' },
+        { id: 'tiger', emoji: '🐯', name: 'Tigre', desc: 'O maior de todos os felinos selvagens, reconhecível por sua pelagem alaranjada com listras escuras.' },
+        { id: 'zebra', emoji: '🦓', name: 'Zebra', desc: 'Mamífero africano da família dos cavalos, inconfundível por suas listras pretas e brancas.' },
+        { id: 'giraffe', emoji: '🦒', name: 'Girafa', desc: 'O mamífero mais alto do mundo, com um pescoço extremamente longo para alcançar folhas altas.' },
+        { id: 'bear', emoji: '🐻', name: 'Urso', desc: 'Grande mamífero que pode ser carnívoro ou onívoro. Muitos hibernam durante o inverno.' }
+    ],
+    frutas: [
+        { id: 'carrot', emoji: '🥕', name: 'Cenoura', desc: 'Raiz crocante e alaranjada, muito rica em vitamina A, ótima para a visão.' },
+        { id: 'apple', emoji: '🍎', name: 'Maçã', desc: 'Fruta popular, doce e crocante. Muito rica em fibras e antioxidantes.' },
+        { id: 'banana', emoji: '🍌', name: 'Banana', desc: 'Fruta amarela e alongada, excelente fonte de energia rápida e potássio.' },
+        { id: 'broccoli', emoji: '🥦', name: 'Brócolis', desc: 'Vegetal verde em formato de arvorezinha, riquíssimo em vitaminas e cálcio.' },
+        { id: 'grape', emoji: '🍇', name: 'Uva', desc: 'Fruta em formato de pequenos globos cultivada em cachos. Usada para sucos e vinhos.' },
+        { id: 'orange', emoji: '🍊', name: 'Laranja', desc: 'Fruta cítrica muito suculenta, mundialmente famosa por seu alto teor de vitamina C.' },
+        { id: 'strawberry', emoji: '🍓', name: 'Morango', desc: 'Fruta vermelha com sementes aparentes, sabor doce e levemente ácido.' },
+        { id: 'watermelon', emoji: '🍉', name: 'Melancia', desc: 'Fruto grande e refrescante, composto por mais de 90% de água. Ótimo no verão.' },
+        { id: 'pineapple', emoji: '🍍', name: 'Abacaxi', desc: 'Fruta tropical com casca espinhosa e polpa amarela, doce e cítrica. Símbolo de hospitalidade.' },
+        { id: 'lemon', emoji: '🍋', name: 'Limão', desc: 'Fruta cítrica bastante ácida, muito usada para temperar saladas e fazer sucos refrescantes.' },
+        { id: 'tomato', emoji: '🍅', name: 'Tomate', desc: 'Botanicamente uma fruta, mas usado como vegetal nas refeições. Rico em licopeno.' },
+        { id: 'lettuce', emoji: '🥬', name: 'Alface', desc: 'Folhagem verde muito popular, sendo a base principal da maioria das saladas no mundo.' },
+        { id: 'onion', emoji: '🧅', name: 'Cebola', desc: 'Bulbo com camadas utilizado como tempero universal. Costuma fazer as pessoas chorarem ao cortá-la.' },
+        { id: 'potato', emoji: '🥔', name: 'Batata', desc: 'Tubérculo muito versátil na culinária, podendo ser frita, assada ou em formato de purê.' },
+        { id: 'corn', emoji: '🌽', name: 'Milho', desc: 'Cereal amarelo cultivado em espigas. Pode ser cozido, feito pipoca ou pamonha.' }
+    ]
+};
+
+// --- VARIÁVEIS DE ESTADO ---
+let config = { level: 6, players: 1, useTimer: false, timerValue: 15 };
+let themeStr = '';
+let currentCards = [];
+let deck = [];
+let flippedCards = [];
+let matchedPairs = 0;
+let scores = { p1: 0, p2: 0 };
+let currentTurn = 1; // 1 ou 2
+let gameTimer = null;
+let timeLeft = 0;
+let isMuted = false;
+let gameStarted = false;
+
+// --- SISTEMA DE AUDIO (Web Audio API - Funciona Offline) ---
+let audioCtx;
+function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playSound(type) {
+    if (isMuted) return;
+    initAudio();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+    
+    if (type === 'click') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
+    } else if (type === 'flip') {
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(500, now + 0.1);
+        gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
+    } else if (type === 'match') {
+        osc.type = 'square'; osc.frequency.setValueAtTime(400, now);
+        osc.frequency.setValueAtTime(600, now + 0.1);
+        gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.3);
+        osc.start(now); osc.stop(now + 0.3);
+    } else if (type === 'error') {
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+        gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.2);
+        osc.start(now); osc.stop(now + 0.2);
+    }
+}
+function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById('btn-mute').innerText = isMuted ? '🔇 Som' : '🔊 Som';
+    playSound('click');
+}
+
+// --- NAVEGAÇÃO DE TELAS ---
+function goToScreen(screenNum) {
+    playSound('click');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(`screen-${screenNum}`).classList.remove('hidden');
+    document.getElementById(`screen-${screenNum}`).classList.add('active');
+
+    // Salvar config ao sair da tela 1
+    if(screenNum === 2) {
+        config.level = parseInt(document.querySelector('input[name="level"]:checked').value);
+        config.players = parseInt(document.querySelector('input[name="players"]:checked').value);
+        config.useTimer = document.getElementById('timer-toggle').checked;
+    }
+}
+
+// Controle do timer na Tela 1
+document.getElementById('timer-toggle').addEventListener('change', (e) => {
+    playSound('click');
+    document.getElementById('timer-controls').classList.toggle('hidden', !e.target.checked);
+});
+function adjustTime(val) {
+    playSound('click');
+    config.timerValue += val;
+    if(config.timerValue < 5) config.timerValue = 5;
+    if(config.timerValue > 60) config.timerValue = 60;
+    document.getElementById('time-display').innerText = config.timerValue;
+}
+
+// --- ESCOLHA DE TEMA E PREPARAÇÃO ---
+function selectTheme(theme) {
+    playSound('click');
+    themeStr = theme;
+    
+    let title = '';
+    if(theme === 'paises') title = '🌍 Países';
+    if(theme === 'animais') title = '🦁 Animais';
+    if(theme === 'frutas') title = '🍎 Frutas e Verduras';
+    if(theme === 'aleatorio') title = '🎲 Aleatório';
+    document.getElementById('selected-theme-title').innerText = `Tema: ${title}`;
+
+    // Preparar lista de cartas baseada no nível escolhido
+    currentCards = [];
+    if(theme === 'aleatorio') {
+        let all = [...database.paises, ...database.animais, ...database.frutas];
+        all.sort(() => 0.5 - Math.random());
+        currentCards = all.slice(0, config.level);
+    } else {
+        let selectedDb = [...database[theme]];
+        selectedDb.sort(() => 0.5 - Math.random());
+        currentCards = selectedDb.slice(0, config.level);
+    }
+
+    goToScreen(3);
+}
+
+function showList() {
+    playSound('click');
+    const container = document.getElementById('knowledge-list');
+    container.innerHTML = '';
+    
+    currentCards.forEach(item => {
+        container.innerHTML += `
+            <div class="knowledge-item">
+                <span class="emoji">${item.emoji}</span>
+                <div>
+                    <strong>${item.name}</strong>
+                    <p>${item.desc}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById('screen-list').classList.remove('hidden');
+}
+
+// --- LÓGICA DO JOGO ---
+function startGame() {
+    playSound('click');
+    goToScreen('game');
+    
+    // UI Setup
+    document.getElementById('score-p2').classList.toggle('hidden', config.players === 1);
+    document.getElementById('timer-box').classList.toggle('hidden', !config.useTimer);
+    document.getElementById('btn-start-game').classList.remove('hidden');
+    document.getElementById('card-grid').classList.add('hidden');
+    document.getElementById('found-items').classList.add('hidden');
+    
+    updateScoreUI();
+    generateGrid();
+    gameStarted = false;
+}
+
+function beginPlay() {
+    playSound('click');
+    gameStarted = true;
+    document.getElementById('btn-start-game').classList.add('hidden');
+    document.getElementById('card-grid').classList.remove('hidden');
+    document.getElementById('found-items').classList.remove('hidden');
+    document.getElementById('found-list').innerHTML = '';
+    
+    if(config.useTimer) startTurnTimer();
+}
+
+function generateGrid() {
+    const grid = document.getElementById('card-grid');
+    grid.innerHTML = '';
+    matchedPairs = 0;
+    flippedCards = [];
+    
+    // Duplicar e embaralhar
+    deck = [...currentCards, ...currentCards];
+    deck.sort(() => 0.5 - Math.random());
+
+    deck.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.id = item.id;
+        card.dataset.index = index;
+        
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-back"></div>
+                <div class="card-front">
+                    <span class="emoji">${item.emoji}</span>
+                    <span class="title">${item.name}</span>
+                </div>
+            </div>
+        `;
+        
+        card.addEventListener('click', () => handleCardClick(card, item));
+        grid.appendChild(card);
+    });
+}
+
+function handleCardClick(card, item) {
+    if(!gameStarted) return;
+    if(card.classList.contains('flipped') || flippedCards.length >= 2) return;
+
+    playSound('flip');
+    card.classList.add('flipped');
+    flippedCards.push({ card, item });
+
+    if(flippedCards.length === 2) {
+        checkMatch();
+    }
+}
+
+function checkMatch() {
+    const [card1, card2] = flippedCards;
+    
+    if(card1.item.id === card2.item.id) {
+        // Acertou
+        playSound('match');
+        matchedPairs++;
+        if(currentTurn === 1) scores.p1++; else scores.p2++;
+        
+        addFoundItem(card1.item);
+        updateScoreUI();
+        flippedCards = [];
+        
+        if(config.useTimer) resetTimer(); // Reseta o tempo após acerto
+        
+        if(matchedPairs === config.level) setTimeout(endGame, 500);
+    } else {
+        // Errou
+        if(config.useTimer) clearInterval(gameTimer); // Pausa tempo na animação de erro
+        setTimeout(() => {
+            playSound('error');
+            card1.card.classList.remove('flipped');
+            card2.card.classList.remove('flipped');
+            flippedCards = [];
+            switchTurn();
+        }, 1000);
+    }
+}
+
+function addFoundItem(item) {
+    const list = document.getElementById('found-list');
+    const li = document.createElement('li');
+    li.innerHTML = `${item.emoji} ${item.name}`;
+    li.onclick = () => openInfoModal(item);
+    list.appendChild(li);
+}
+
+// --- TIMER E TURNOS ---
+function startTurnTimer() {
+    clearInterval(gameTimer);
+    timeLeft = config.timerValue;
+    document.getElementById('game-time').innerText = timeLeft;
+    
+    gameTimer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('game-time').innerText = timeLeft;
+        
+        if(timeLeft <= 0) {
+            clearInterval(gameTimer);
+            playSound('error');
+            // Tempo esgotado desvira as cartas e passa o turno
+            if(flippedCards.length > 0) {
+                flippedCards.forEach(fc => fc.card.classList.remove('flipped'));
+                flippedCards = [];
+            }
+            switchTurn();
+        }
+    }, 1000);
+}
+
+function resetTimer() {
+    if(config.useTimer && gameStarted) startTurnTimer();
+}
+
+function switchTurn() {
+    if(config.players === 2) {
+        currentTurn = currentTurn === 1 ? 2 : 1;
+        updateScoreUI();
+    }
+    resetTimer();
+}
+
+function updateScoreUI() {
+    document.getElementById('score-p1').innerText = `Player 1: ${scores.p1}`;
+    document.getElementById('score-p2').innerText = `Player 2: ${scores.p2}`;
+    
+    document.getElementById('score-p1').classList.toggle('active-turn', currentTurn === 1);
+    if(config.players === 2) {
+        document.getElementById('score-p2').classList.toggle('active-turn', currentTurn === 2);
+    }
+}
+
+// --- MODAIS E FINALIZAÇÃO ---
+function openInfoModal(item) {
+    playSound('click');
+    document.getElementById('modal-emoji').innerText = item.emoji;
+    document.getElementById('modal-title').innerText = item.name;
+    document.getElementById('modal-desc').innerText = item.desc;
+    document.getElementById('info-modal').classList.remove('hidden');
+}
+
+function closeModal(id) {
+    playSound('click');
+    document.getElementById(id).classList.add('hidden');
+}
+
+function endGame() {
+    clearInterval(gameTimer);
+    playSound('match'); // Toca som final
+    
+    let winnerText = '';
+    if(config.players === 1) {
+        winnerText = `Parabéns! Você fez ${scores.p1} pontos no total.`;
+    } else {
+        if(scores.p1 > scores.p2) winnerText = '🏆 Jogador 1 Venceu!';
+        else if(scores.p2 > scores.p1) winnerText = '🏆 Jogador 2 Venceu!';
+        else winnerText = 'Empate!';
+    }
+    
+    document.getElementById('winner-text').innerText = winnerText;
+    document.getElementById('game-over-modal').classList.remove('hidden');
+}
+
+function playAgain() {
+    playSound('click');
+    closeModal('game-over-modal');
+    // Mantém o placar (scores) intacto e escolhe outro tema (volta pra tela 2)
+    goToScreen(2);
+}
+
+function resetToMenu() {
+    playSound('click');
+    closeModal('game-over-modal');
+    clearInterval(gameTimer);
+    scores = { p1: 0, p2: 0 };
+    currentTurn = 1;
+    goToScreen(1);
+}
+    </script>
+    
+</body>
+</html>
