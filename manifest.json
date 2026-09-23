@@ -1,0 +1,16 @@
+{
+  "name": "Controle Escolar Fidelidade",
+  "short_name": "ControleEF",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#B51217",
+  "icons": [
+    {
+      "src": "https://www.dropbox.com/scl/fi/z0vfkhltjz1ndtymqe1t7/EF_Logo_Admin_512x512.png?rlkey=w08zjlf3lbvaw6rzwco2jf3x7&raw=1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
