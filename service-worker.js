@@ -1,4 +1,20 @@
-const CACHE_NAME = "AppFidelidade-Controle-v1";
+// Exemplo de como deve ficar a sua lista no Service Worker
+const arquivosOffline = [
+    '/offline.html',
+    '/fid_game1.html', 
+    '/fid_game2.html', 
+    '/fid_game3.html', 
+    '/fid_game4.html', 
+    '/fid_game5.html',
+    '/fid_game6.html', 
+    '/fid_game7.html',
+    '/fid_game8.html', 
+    // ... seus outros arquivos (CSS, logos, etc)
+];
+
+//  versão do cache 
+
+const CACHE_NAME = "AppFidelidade-Controle-v2";
 const urlsToCache = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", event => {
