@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#B51217" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Solyx Lojista" />
+    <link rel="manifest" href="./manifest.json">
+    <link
+      rel="apple-touch-icon"
+      href="https://www.dropbox.com/scl/fi/opjoobbx6fa16a10cq1tm/SF_512x512_Admin.png?rlkey=0etj9gau7r85g3aeqm2wwtm71&raw=1"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Solyx Lojista" />
+    <meta name="msapplication-TileColor" content="#B51217" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="color-scheme" content="dark" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32" 
+      href="https://www.dropbox.com/scl/fi/h5uaz5cdp9pwwecns7k2a/SF_32x32_Admin.png?rlkey=kojprk2umi0sm6oo4jxezvpsy&raw=1"
+    />
+    <link 
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="https://www.dropbox.com/scl/fi/9m3lppz6pzikucy6uuo07/SF_192x192_Admin.png?rlkey=629qjsc9il7i0gqneb3hikkms&raw=1"
+    />
+    <!-- Fonte Oficial -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<title>
+    Lojista <span class="nome-dinamico"></span>
+</title>
+<meta name="description" id="metaDescription" content="Programa de Fidelidade - Escolha seu tipo de acesso.">
+
+<link rel="apple-touch-icon" href="./icon-192.png">
+ 
+    <style>
+        /* =========================================================
+           FIDELIDADE.NET.BR
+           Tela de abertura / seleção de acesso
+           HTML5 + CSS3
+           ========================================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family:
+                Inter,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+            color: #ffffff;
+            background:
+                radial-gradient(
+                    circle at 50% 20%,
+                    rgba(181, 18, 23, 0.18),
+                    transparent 34%
+                ),
+                radial-gradient(
+                    circle at 10% 90%,
+                    rgba(181, 18, 23, 0.10),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    145deg,
+                    #080808 0%,
+                    #101010 48%,
+                    #050505 100%
+                );
+            overflow-x: hidden;
+        }
+        /* =========================================================
+           FUNDO DECORATIVO
+           ========================================================= */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 420px;
+            height: 420px;
+            top: -180px;
+            right: -150px;
+            border-radius: 50%;
+            background: rgba(181, 18, 23, 0.08);
+            filter: blur(10px);
+            pointer-events: none;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            width: 350px;
+            height: 350px;
+            bottom: -180px;
+            left: -150px;
+            border-radius: 50%;
+            background: rgba(181, 18, 23, 0.06);
+            filter: blur(15px);
+            pointer-events: none;
+        }
+        /* =========================================================
+           CONTAINER PRINCIPAL
+           ========================================================= */
+        .splash-page {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+        /* =========================================================
+           CARD
+           ========================================================= */
+        .splash-card {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 46px 36px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.055),
+                    rgba(255, 255, 255, 0.018)
+                );
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        /* =========================================================
+           LOGO
+           ========================================================= */
+        .logo-wrapper {
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .logo {
+            display: block;
+            width: auto;
+            max-width: 300px;
+            max-height: 150px;
+            height: auto;
+            object-fit: contain;
+            filter:
+             drop-shadow(0 12px 25px rgba(0, 0, 0, 0.35));
+        }
+        /* =========================================================
+           TEXTO
+           ========================================================= */
+        .welcome-text {
+            margin-bottom: 28px;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.5;
+            text-align: center;
+            letter-spacing: 0.2px;
+        }
+        /* =========================================================
+           ÁREA DOS BOTÕES
+           ========================================================= */
+        .access-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        /* =========================================================
+           BOTÕES
+           ========================================================= */
+        .access-button {
+            position: relative;
+            width: 100%;
+            min-height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            overflow: hidden;
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease,
+                background 0.25s ease;
+        }
+        /* brilho discreto */
+        .access-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.10),
+                    transparent
+                );
+            transform: skewX(-20deg);
+            transition: left 0.55s ease;
+            pointer-events: none;
+        }
+        /* =========================================================
+           LOJISTA
+           ========================================================= */
+        .merchant-button {
+            background:
+                linear-gradient(
+                    135deg,
+                    #b51217 0%,
+                    #d51b21 100%
+                );
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 10px 28px rgba(181, 18, 23, 0.25);
+        }
+        /* =========================================================
+           CLIENTE
+           ========================================================= */
+        .customer-button {
+            background:
+                linear-gradient(
+                    135deg,
+                    #202020 0%,
+                    #151515 100%
+                );
+            border-color: rgba(255, 255, 255, 0.13);
+            box-shadow:
+                0 10px 28px rgba(0, 0, 0, 0.30);
+        }
+        /* =========================================================
+           HOVER
+           ========================================================= */
+        @media (hover: hover) {
+            .access-button:hover {
+                transform: translateY(-3px);
+            }
+            .access-button:hover::before {
+                left: 130%;
+            }
+            .merchant-button:hover {
+                box-shadow:
+                    0 16px 35px rgba(181, 18, 23, 0.38);
+            }
+            .customer-button:hover {
+                border-color: rgba(255, 255, 255, 0.24);
+                background:
+                    linear-gradient(
+                        135deg,
+                        #292929 0%,
+                        #1a1a1a 100%
+                    );
+                box-shadow:
+                    0 16px 35px rgba(0, 0, 0, 0.45);
+            }
+        }
+        /* =========================================================
+           ACTIVE
+           ========================================================= */
+        .access-button:active {
+            transform: translateY(1px) scale(0.985);
+            transition-duration: 0.08s;
+        }
+        /* =========================================================
+           FOCO / ACESSIBILIDADE
+           ========================================================= */
+        .access-button:focus-visible {
+            outline: 3px solid rgba(255, 255, 255, 0.90);
+            outline-offset: 4px;
+        }
+        /* =========================================================
+           RODAPÉ
+           ========================================================= */
+        .footer {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.34);
+            font-size: 11px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        /* =========================================================
+           TABLETS
+           ========================================================= */
+        @media (max-width: 600px) {
+            .splash-page {
+                padding: 22px 16px;
+            }
+            .splash-card {
+                max-width: 440px;
+                padding:
+                    38px
+                    24px
+                    32px;
+                border-radius: 24px;
+            }
+            .logo {
+                max-width: 270px;
+                max-height: 135px;
+            }
+            .logo-wrapper {
+                margin-bottom: 24px;
+            }
+            .welcome-text {
+                margin-bottom: 24px;
+                font-size: 14px;
+            }
+            .access-button {
+                min-height: 64px;
+                font-size: 15.5px;
+                border-radius: 15px;
+            }
+        }
+        /* =========================================================
+           SMARTPHONES PEQUENOS
+           ========================================================= */
+        @media (max-width: 380px) {
+            .splash-page {
+                padding: 18px 13px;
+            }
+            .splash-card {
+                padding:
+                    30px
+                    18px
+                    27px;
+                border-radius: 21px;
+            }
+            .logo {
+                max-width: 235px;
+                max-height: 115px;
+            }
+            .logo-wrapper {
+                margin-bottom: 20px;
+            }
+            .welcome-text {
+                margin-bottom: 21px;
+                font-size: 13.5px;
+            }
+            .access-list {
+                gap: 12px;
+            }
+            .access-button {
+                min-height: 60px;
+                padding: 12px 16px;
+                font-size: 15px;
+                border-radius: 14px;
+            }
+            .footer {
+                margin-top: 24px;
+            }
+        }
+        /* =========================================================
+           TELAS MUITO ALTAS / DESKTOP
+           ========================================================= */
+        @media (min-width: 1000px) {
+            .splash-card {
+                max-width: 500px;
+                padding:
+                    52px
+                    42px
+                    44px;
+            }
+            .logo {
+                max-width: 320px;
+                max-height: 160px;
+            }
+        }
+        /* =========================================================
+           REDUÇÃO DE MOVIMENTO
+           ========================================================= */
+        @media (prefers-reduced-motion: reduce) {
+            .access-button,
+            .access-button::before {
+                transition: none;
+            }
+        }
+      .install-button {
+    width: 100%;
+    min-height: 58px;
+    margin-top: 20px;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.85);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.install-button:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.28);
+    transform: translateY(-2px);
+}
+
+.install-button:active {
+    transform: scale(0.98);
+}
+
+.install-button:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 3px;
+}
+    </style>
+</head>
+
+<body>
+<!-- REDIRECIONAMENTO OFFLINE -->
+    <main class="splash-page">
+        <section class="splash-card" aria-label="Fidelidade">
+            <!-- LOGO -->
+            <div class="logo-wrapper">
+                <img class="logo logo-dinamica alt-dinamico" src="#"  alt=""/> 
+            </div>
+            <!-- MENSAGEM -->
+            <p class="welcome-text">
+                Escolha uma opção para continuar
+            </p>
+            <button
+                id="installButton"
+                class="install-button"
+                type="button" >
+                📲 Instalar aplicativo
+            </button>
+                   <!-- BOTÃO MOBILE -->
+<br>
+            <!-- ACESSOS -->
+            <nav class="access-list" aria-label="Opções de acesso">
+                <!-- ACESSO LOJISTA -->
+                <a
+                    class="access-button merchant-button"
+                    href="https://painelsolyxfidelidade.blogspot.com/p/avdvs615v65s1dv65s1v65s1v65s1v65s1v65s1.html"
+                    aria-label="Acesso Lojista"
+                >
+                    🏢&nbsp;&nbsp;Acesso Lojista
+                </a>
+
+
+                <!-- ACESSO CLIENTE -->
+                <a  class="access-button customer-button"
+                    href="#" data-rota="URL_AppCliente" 
+                    aria-label="Acesso Cliente" >
+                    🎁&nbsp;&nbsp;Acesso Cliente
+                </a>
+            </nav>
+
+
+            <!-- RODAPÉ -->
+            <div class="footer">
+        © <span id="anoAtual"></span> <strong class="nome-dinamico"></strong> <br> 
+        Programa de Fidelização de Clientes  <br>
+        Todos os direitos reservados.
+            </div>
+
+        </section>
+
+    </main>
+
+  <script>
+
+let deferredInstallPrompt = null;
+
+const installButton =
+    document.getElementById("installButton");
+
+
+window.addEventListener(
+    "beforeinstallprompt",
+    function (event) {
+
+        event.preventDefault();
+
+        deferredInstallPrompt = event;
+
+        installButton.style.display = "flex";
+        installButton.style.alignItems = "center";
+        installButton.style.justifyContent = "center";
+
+    }
+);
+
+
+installButton.addEventListener(
+    "click",
+    async function () {
+
+        if (!deferredInstallPrompt) {
+            return;
+        }
+
+        deferredInstallPrompt.prompt();
+
+        const { outcome } =
+            await deferredInstallPrompt.userChoice;
+
+        console.log(
+            "Resultado da instalação:",
+            outcome
+        );
+
+        deferredInstallPrompt = null;
+
+        installButton.style.display = "none";
+
+    }
+);
+
+
+window.addEventListener(
+    "appinstalled",
+    function () {
+
+        console.log(
+            "Aplicativo Fidelidade instalado!"
+        );
+
+        installButton.style.display = "none";
+
+    }
+);
+
+</script>
+
+    <script>
+document.getElementById("anoAtual").textContent =
+    new Date().getFullYear();
+</script>
+    <!-- Reload Inicial-->
+    <script>
+  window.onload = function() {
+    // Verifica se a página já foi recarregada nesta sessão
+    if (!sessionStorage.getItem('ja_recarregou')) {
+      // Cria a marcação para indicar que já recarregou
+      sessionStorage.setItem('ja_recarregou', 'true');
+      
+      // Executa o reload da página
+      window.location.reload();
+    }
+  };
+</script>
+
+	
+  <!--  FIDELIDADE.NET.BR IDENTIDADE VISUAL DINÂMINCA 6.0-->
+<script>
+// =========================================================================
+    // FIDELIDADE.NET.BR IDENTIDADE VISUAL DINÂMINCA 6.0
+    const API_URL = "URL_APPS_SCRIPT_AQUI";
+// ==========================================
+// FUNÇÕES DE IDENTIDADE VISUAL
+// ==========================================
+
+// FORMULÁRIO 
+async function carregarIdentidadeVisual() {
+    try {
+        const res = await (await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'buscar_identidade' })
+        })).json();
+
+        if (res.status === 'success') {
+            const iden = res.identidade;
+            
+            // Preenchendo campos de texto
+            if (document.getElementById('idTratamento')) document.getElementById('idTratamento').value = iden.Tratamento_Genero || '';
+            if (document.getElementById('idLogo')) document.getElementById('idLogo').value = iden.Logo_URL || '';
+            if (document.getElementById('idNome')) document.getElementById('idNome').value = iden.Nome_Programa || '';
+          
+            // MOEDA DINAMICA:
+            if (document.getElementById('idMoeda')) document.getElementById('idMoeda').value = iden.Nome_Moeda || '';
+            if (document.getElementById('idCifrao')) document.getElementById('idCifrao').value = iden.Cifrao_Moeda || '';
+            if (document.getElementById('idImgMoeda')) document.getElementById('idImgMoeda').value = iden.Imagem_Moeda || '';
+
+            if (document.getElementById('idTelefone')) document.getElementById('idTelefone').value = iden.Telefone_WPP || '';
+            if (document.getElementById('idApi')) document.getElementById('idApi').value = iden.URL_API || '';
+            if (document.getElementById('idAppCliente')) document.getElementById('idAppCliente').value = iden.URL_AppCliente || '';
+            if (document.getElementById('idAppCadastro')) document.getElementById('idAppCadastro').value = iden.URL_Cadastro || '';
+            if (document.getElementById('idAppPlayground')) document.getElementById('idAppPlayground').value = iden.URL_Playground || '';
+            if (document.getElementById('idAppRoleta')) document.getElementById('idAppRoleta').value = iden.URL_Roleta || '';
+            if (document.getElementById('idAppClaw')) document.getElementById('idAppClaw').value = iden.URL_ClawMachine || '';
+            if (document.getElementById('idAppPescaria')) document.getElementById('idAppPescaria').value = iden.URL_Pescaria || '';
+            if (document.getElementById('idAppSorteios')) document.getElementById('idAppSorteios').value = iden.URL_Sorteios || '';
+            if (document.getElementById('idAppRoletaInterativa')) document.getElementById('idAppRoletaInterativa').value = iden.URL_RoletaInterativa || '';
+            if (document.getElementById('idAppCampanhas')) document.getElementById('idAppCampanhas').value = iden.URL_Campanhas || '';
+            if(document.getElementById('urlBackupSheets')) document.getElementById('urlBackupSheets').value = iden.URL_Planilha_BD || '';
+            
+            // --- PALETAS ---
+            window.BG_COR1 = iden["BG_COR1"] || "#1a1a1a";
+            window.BG_COR2 = iden["BG_COR2"] || "#550000";
+
+            if (document.getElementById('idBgCor1')) document.getElementById('idBgCor1').value = window.BG_COR1;
+            if (document.getElementById('idBgCor2')) document.getElementById('idBgCor2').value = window.BG_COR2;
+            // --- FIM DA CORREÇÃO DAS PALETAS ---
+        }
+    } catch (e) {
+        console.error("Erro ao carregar Identidade Visual", e);
+    }
+}
+
+// Chame esta função na inicialização do painel ou no botão que abre a aba
+
+async function salvarIdentidadeVisual() {
+    const btn = event.target;
+    const textoOriginal = btn.innerText;
+    btn.innerText = "Salvando...";
+    btn.disabled = true;
+
+ 
+    const identidadeAtualizada = {
+        Tratamento_Genero: document.getElementById('idTratamento') ? document.getElementById('idTratamento').value : 'a',
+        Logo_URL: document.getElementById('idLogo').value,
+        Nome_Programa: document.getElementById('idNome').value,
+        Nome_Moeda: document.getElementById('idMoeda').value,
+        Cifrao_Moeda: document.getElementById('idCifrao').value,
+        Imagem_Moeda: document.getElementById('idImgMoeda').value,
+      
+        Telefone_WPP: document.getElementById('idTelefone').value,
+        URL_API: document.getElementById('idApi').value,
+        URL_AppCliente: document.getElementById('idAppCliente').value,
+        URL_Cadastro: document.getElementById('idAppCadastro').value,
+        URL_Playground: document.getElementById('idAppPlayground').value,
+        URL_Roleta: document.getElementById('idAppRoleta').value,
+        URL_ClawMachine: document.getElementById('idAppClaw').value,
+        URL_Pescaria: document.getElementById('idAppPescaria').value,
+      	URL_Sorteios: document.getElementById('idAppSorteios').value,
+        URL_RoletaInterativa: document.getElementById('idAppRoletaInterativa').value,
+        URL_Campanhas: document.getElementById('idAppCampanhas').value,
+      
+        // CORES / BACKGROUND
+        "BG_COR1": document.getElementById('idBgCor1').value,
+        "BG_COR2": document.getElementById('idBgCor2').value
+      
+        
+    };
+
+    try {
+        const res = await (await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'salvar_identidade', identidade: identidadeAtualizada })
+        })).json();
+
+        if (res.status === 'success') {
+            alert("Identidade Visual salva com sucesso!");
+                 
+        sessionStorage.removeItem('identidadeGlobal'); // Limpa o cache antigo para forçar a nova leitura
+        } else {
+            alert("Erro: " + res.message);
+        }
+    } catch (e) {
+        alert("Erro ao conectar com o servidor.");
+    }
+
+    btn.innerText = textoOriginal;
+    btn.disabled = false;
+}
+
+
+    async function carregarEConfigurarIdentidade() {
+        try {
+            const cache = sessionStorage.getItem('identidadeGlobal');
+            if (cache) {
+                aplicarIdentidadeVisual(JSON.parse(cache));
+                return;
+            }
+
+            const res = await (await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'buscar_identidade' })
+            })).json();
+
+            if (res.status === 'success' && res.identidade) {
+                sessionStorage.setItem('identidadeGlobal', JSON.stringify(res.identidade));
+                aplicarIdentidadeVisual(res.identidade);
+            }
+        } catch (e) {
+            console.error("Erro ao carregar identidade visual:", e);
+        }
+    }
+
+    // ==========================================
+    // DADOS NA TELA
+    // ==========================================
+    window.atualizarDadosClienteDinamicos = function() {
+        let saldo = 0;
+        let nomeCli = "Cliente";
+        let apelidoCli = "Cliente";
+        
+        // Tenta capturar os dados do cliente logado na memória do app
+        if (typeof clienteLogado !== 'undefined' && clienteLogado) {
+            saldo = clienteLogado.saldoSXC !== undefined ? clienteLogado.saldoSXC : (clienteLogado.saldo || 0);
+            nomeCli = clienteLogado.nome || "Cliente";
+            apelidoCli = clienteLogado.apelido || nomeCli.split(' ')[0];
+        } else if (typeof dadosCliente !== 'undefined' && dadosCliente) {
+            saldo = dadosCliente.saldo || 0;
+            nomeCli = dadosCliente.nome || "Cliente";
+            apelidoCli = dadosCliente.apelido || nomeCli.split(' ')[0];
+        }
+
+        // 1. Salva nas Variáveis Globais
+        window.SALDO_CLIENTE = saldo;
+        window.NOME_CLIENTE = nomeCli;
+        window.APELIDO_CLIENTE = apelidoCli;
+
+        // 2. Injeta nas Classes Vazias do HTML
+        document.querySelectorAll('.nome-cliente-dinamico').forEach(el => el.innerText = window.NOME_CLIENTE);
+        document.querySelectorAll('.apelido-cliente-dinamico').forEach(el => el.innerText = window.APELIDO_CLIENTE);
+        document.querySelectorAll('.saldo-dinamico').forEach(el => el.innerText = Number(window.SALDO_CLIENTE).toLocaleString('pt-BR'));
+    };
+
+    function aplicarIdentidadeVisual(iden) {
+        // SALVA VARIÁVEIS GLOBAIS DE MARCA
+        window.TRATAMENTO_MIN = (iden.Tratamento_Genero || "a").toLowerCase();
+        window.TRATAMENTO_MAI = window.TRATAMENTO_MIN.toUpperCase();
+        window.LOGO_URL = iden.Logo_URL || "";
+        window.CIFRAO_MOEDA = iden.Cifrao_Moeda || "";
+        window.IMAGEM_MOEDA = iden.Imagem_Moeda || ""; // IMAGEM DA MOEDA OFICIAL  
+        window.NOME_PROGRAMA = iden.Nome_Programa || "";
+        window.PRIMEIRO_NOME = iden.Nome_Programa ? iden.Nome_Programa.split(" ")[0] : "";
+        window.NOME_MOEDA = iden.Nome_Moeda || "FidelityCoin(s)";
+        window.NOME_MOEDA_SINGULAR = window.NOME_MOEDA.replace(/\(s\)$/i, '');
+        window.PRIMEIRA_LETRA_CIFRAO = window.CIFRAO_MOEDA.charAt(0);
+       // v.5.0_variável Global do Telefone Oficial 
+       window.TELEFONE_OFICIAL = iden.Telefone_WPP || "";    
+      
+
+      //  VARIÁVEIS / BOT 
+        window.NOME_BOT = iden.Nome_Bot || "Assistente Virtual";
+        window.AVATAR_BOT = iden.Avatar_Bot || "🤖"; // Puxa o avatar da planilha (Emoji ou Link)
+        window.ROTAS_FIDELITY = iden;
+
+        // APLICA BACKGROUND (Gradiente Dinâmico)
+        if (iden.BG_COR1 && iden.BG_COR2) {
+            document.body.style.background = `linear-gradient(335deg, ${iden.BG_COR1} 0%, ${iden.BG_COR2} 150%)`;
+            document.body.style.minHeight = "100vh";
+            document.body.style.backgroundRepeat = "no-repeat";
+            document.body.style.backgroundAttachment = "fixed";
+        }
+      
+        // IMAGEM DINAMICA -  MOEDA OFICIAL
+       if (window.IMAGEM_MOEDA) {
+            document.querySelectorAll('.img-moeda-dinamica').forEach(img => {
+                img.src = window.IMAGEM_MOEDA;
+            });
+        }
+
+        // ATUALIZA A LOGO E TEXTOS 
+        if (window.LOGO_URL) {
+            document.querySelectorAll('.logo-dinamica').forEach(logo => {
+                logo.src = window.LOGO_URL;
+                logo.alt = window.NOME_PROGRAMA;
+            });
+        }
+        // v.5.2 Injeta o tratamento de gênero 
+        document.querySelectorAll('.tratamento-minusculo').forEach(el => el.innerText = window.TRATAMENTO_MIN);
+        document.querySelectorAll('.tratamento-maiusculo').forEach(el => el.innerText = window.TRATAMENTO_MAI);     
+        document.querySelectorAll('.nome-dinamico').forEach(el => el.innerText = window.NOME_PROGRAMA);
+        document.querySelectorAll('.primeiro-nome-dinamico').forEach(el => el.innerText = window.PRIMEIRO_NOME);
+        document.querySelectorAll('.moeda-dinamica').forEach(el => el.innerText = window.CIFRAO_MOEDA);
+        document.querySelectorAll('.nome-moeda-singular').forEach(el => el.innerText = window.NOME_MOEDA_SINGULAR);
+        document.querySelectorAll('.nome-moeda-dinamico').forEach(el => el.innerText = window.NOME_MOEDA);
+        document.querySelectorAll('.letra-moeda-dinamica').forEach(el => el.innerText = window.PRIMEIRA_LETRA_CIFRAO);
+        // v.5.0-  Injeta o número de celular em classes HTML vazias 
+        document.querySelectorAll('.telefone-dinamico').forEach(el => el.innerText = window.TELEFONE_OFICIAL); 
+
+        
+        // Nome do Bot
+        document.querySelectorAll('.nome-bot-dinamico').forEach(el => el.innerText = window.NOME_BOT);
+		//  Dispara a sua função do cabeçalho do FAQ!
+        if (typeof aplicarIdentidadeBotFaq === "function") {
+            aplicarIdentidadeBotFaq(window.NOME_BOT, window.AVATAR_BOT);
+        }
+      
+        // DADOS - CLIENTE
+        window.atualizarDadosClienteDinamicos();
+
+        // 5. INJEÇÃO AUTOMÁTICA DE URLs NOS LINKS (Tags <a>)
+        document.querySelectorAll('[data-rota]').forEach(link => {
+            const rotaAlvo = link.getAttribute('data-rota');
+            if (window.ROTAS_FIDELITY[rotaAlvo]) {
+                link.href = window.ROTAS_FIDELITY[rotaAlvo];
+            }
+        });
+        document.querySelectorAll('.alt-dinamico').forEach(img => img.alt = window.NOME_PROGRAMA);
+      
+      	 // 6. BACKGROUNDS DINAMICOS
+
+              // Injeta a cor de fundo primária nos elementos com a classe bg-dinamico
+        document.querySelectorAll('.bg-dinamico').forEach(el => {
+            el.style.background = window.BG_COR1; 
+        });
+
+    	    // Injeta o gradiente completo nos elementos com a classe bg-dinamico
+        document.querySelectorAll('.bg-dinamico').forEach(el => {
+            el.style.background = `linear-gradient(335deg, ${window.BG_COR1} 0%, ${window.BG_COR2} 150%)`;
+        });
+      
+      // Atualiza as variáveis do CSS :root com as cores do banco de dados
+          document.documentElement.style.setProperty('--bg-cor1', iden.BG_COR1 || '#1a1a1a');
+          document.documentElement.style.setProperty('--bg-cor2', iden.BG_COR2 || '#550000');
+      
+      // ==========================================
+        // PLACEHOLDERS DINÂMICOS- MOTOR
+        // ==========================================
+        document.querySelectorAll('[data-placeholder]').forEach(el => {
+            // 1. Lê a frase curinga original que você escreveu no HTML
+            let texto = el.getAttribute('data-placeholder');
+          
+          // NOVOS Curingas de Tratamento (v.5.2)
+            texto = texto.replace(/\[TRATAMENTO_MINUSCULO\]/gi, window.TRATAMENTO_MIN || 'a');
+            texto = texto.replace(/\[TRATAMENTO_MAIUSCULO\]/gi, window.TRATAMENTO_MAI || 'A');
+            
+            // 2. Substitui as tags pelas Variáveis Globais reais
+            texto = texto.replace(/\[NOME_PROGRAMA\]/gi, window.NOME_PROGRAMA || '');
+            texto = texto.replace(/\[PRIMEIRO_NOME\]/gi, window.PRIMEIRO_NOME || '');
+            texto = texto.replace(/\[MOEDA\]/gi, window.CIFRAO_MOEDA || '');
+            texto = texto.replace(/\[NOME_MOEDA_SINGULAR\]/gi, window.NOME_MOEDA_SINGULAR || '');
+            texto = texto.replace(/\[NOME_MOEDA\]/gi, window.NOME_MOEDA || '');          
+            texto = texto.replace(/\[NOME_BOT\]/gi, window.NOME_BOT || 'Assistente');
+            // v.5.0 - Adiciona suporte ao placeholder do telefone! 
+            texto = texto.replace(/\[TELEFONE_OFICIAL\]/gi, window.TELEFONE_OFICIAL || '');
+            
+            // 3. Injeta o texto final e perfeito no placeholder do navegador!
+            el.placeholder = texto;
+        });
+      
+        // TÍTULO DA ABA E META DESCRIPTION
+        document.title = window.NOME_PROGRAMA;
+        const metaDesc = document.getElementById('metaDescription');
+        if (metaDesc && window.NOME_PROGRAMA) {
+            metaDesc.setAttribute("content", `${window.NOME_PROGRAMA} - Escolha seu tipo de acesso.`);
+        }
+    }
+
+    // ==========================================
+    // NAVEGAÇÃO universal
+    // ==========================================
+    function irParaRota(rotaAlvo) {
+        if (window.ROTAS_FIDELITY && window.ROTAS_FIDELITY[rotaAlvo]) {
+            window.location.href = window.ROTAS_FIDELITY[rotaAlvo];
+        } else {
+            alert("Carregando o link de destino, tente novamente em 1 segundo...");
+        }
+    }
+
+    // página lida
+    document.addEventListener("DOMContentLoaded", carregarEConfigurarIdentidade);
+
+   // Ajuste Telefone 
+  function aplicarTelefoneDinamico() {
+    // 1. Pega o valor bruto da variável global e limpa
+    let telBruto = String(window.TELEFONE_OFICIAL || '');
+    let numCru = telBruto.replace(/\D/g, '');
+    let telFormatado = telBruto;
+
+    // 2. Aplica a máscara inteligente (13 dígitos com DDI 55 ou 11 dígitos padrão)
+    if (numCru.length === 13 && numCru.startsWith('55')) {
+        telFormatado = `(${numCru.substring(2, 4)}) ${numCru.substring(4, 5)} ${numCru.substring(5, 9)}-${numCru.substring(9, 13)}`;
+    } else if (numCru.length === 11) {
+        telFormatado = `(${numCru.substring(0, 2)}) ${numCru.substring(2, 3)} ${numCru.substring(3, 7)}-${numCru.substring(7, 11)}`;
+    }
+
+    // 3. Varre a página inteira e preenche todas as tags com a classe .telefone-dinamico
+    document.querySelectorAll('.telefone-dinamico').forEach(el => {
+        el.innerText = telFormatado;
+    });
+}
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker do APP Fidelidade registrado com sucesso! Escopo:', registration.scope);
+        })
+        .catch(function(error) {
+          console.error('Falha ao registrar o Service Worker do Aplicativo:', error);
+        });
+    });
+  }
+</script>
+
+</body>
+</html>
