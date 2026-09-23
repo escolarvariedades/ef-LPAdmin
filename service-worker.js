@@ -1,5 +1,5 @@
 //  versão do cache 
-const CACHE_NAME = "AppFidelidade-Controle-v4";
+const CACHE_NAME = "AppFidelidade-Controle-v5";
 
 // Acesso Offline
 const arquivosOffline = [
